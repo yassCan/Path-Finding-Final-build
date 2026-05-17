@@ -6,30 +6,36 @@
 
 // BOARD_HEIGHT OR WIDTH: number of cells 
 
-const cells = [...document.querySelectorAll(".cell")];
+let cells = [...document.querySelectorAll(".cell")];
 let AlgorithmType = "ASTAR";
 
-const cellsTable = cells2Darray();
+let cellsTable = cells2Darray();
 let cellsClass = cells.map(x => new Cell(x));
 let cellsClassTable = Array.from({ length: BOARD_HEIGHT }, () => Array(BOARD_WIDTH));
 cellsClass.forEach(cell => {
     cellsClassTable[cell.y][cell.x] = cell;
 });
-const cellMap = new Map(cellsClass.map(cell => [cell.element, cell]));
-let timeBeetweenAnimationFrames = 1500;
+let cellMap = new Map(cellsClass.map(cell => [cell.element, cell]));
+let timeBeetweenAnimationFrames = 5000;
 let count = 0;
 let [start, end] = [document.querySelector(".START"), document.querySelector(".END")];
 let [startNodeClass] = cellsClass.filter(cellClass => cellClass.element.classList.contains("START"));
 let loop = false
+
 const d = new Dweller();
 
 // debug()
 // cellsTable[1][1].classList.add("START");
 // cellsTable[BOARD_HEIGHT-1][BOARD_WIDTH-1].classList.add("END");
+function toggleDiagonalMovement() {
+    diagonalMovement = !diagonalMovement;
+    queueAStarUpdate();
+}
 function maze() {
     clearBoard();
     for(let i = 0;i < cellsTable.length;i++) {
         for(let j = 0;j < cellsTable[i].length;j++) {
+            if(cellsTable[i][j].classList.contains("START") || cellsTable[i][j].classList.contains("END")) continue;
             if(j % 2 === 0 || i % 2 === 0) {
                 cellsTable[i][j].classList.add("obstacle")
             } else {
@@ -134,7 +140,9 @@ function getPos(element) {
 
 
 
-
+function slowDown() {
+    slowDweller = !slowDweller;
+}
 
 
 function dist(a, b) {
@@ -144,9 +152,14 @@ function dist(a, b) {
     const [bX, bY] = getPos(bElem);
     // return Math.abs(aX - bX) + Math.abs(aY - bY);
     if(AlgorithmType === "ASTAR") {
-        return Math.abs(aX - bX) + Math.abs(aY - bY);
-    } 
-    return 0
+        return (diagonalMovement === true) ? 
+            Math.max(Math.abs(aX - bX), Math.abs(aY - bY)) :
+            Math.abs(aX - bX) + Math.abs(aY - bY);     
+
+    } if (AlgorithmType === "DIJKSTRA") {
+        return 0
+    }
+
 }
 
 
@@ -156,14 +169,14 @@ function removeFromArray(arr, elm) {
         if(arr[i] === elm) arr.splice(i, 1)
     }
 }
-function neighborsOf(elm) {
+function neighborsOf(elm, diagonal = false) {
     const key = elm?.element ?? elm;
     const c = cellMap.get(key);
     if (!c) {
         console.warn("neighborsOf: cell not found for element", elm);
         return [];
     }
-    return c.neighboors();
+    return c.neighboors(diagonal);
 }
 
 async function reconstructPath(cameFrom, current) {
@@ -174,19 +187,25 @@ async function reconstructPath(cameFrom, current) {
         }
         current = cameFrom.get(current);
     }
-    path.reverse().forEach(cell => {
+
+    for (const cell of path) {
+        // console.log(isDragging);
+        if(!isDragging) await sleep(0.5);
+        cell.element.classList.remove("searchCell");
         cell.element.classList.add(`path-${AlgorithmType.toLowerCase()}`);
-    });
+    }
 }
 
-function AStar() {
+
+async function AStar() {
     const startCell = cellMap.get(start);
     const endCell = cellMap.get(end);
     if (!startCell || !endCell) {
         console.warn("AStar: start or end cell is missing");
         return;
     }
-
+    
+    // make the path paint the searched cells with cyan, and the final path with yellow for A* and blue for Dijkstra
     const openSet = [startCell];
     const closedSet = new Set();
     const cameFrom = new Map();
@@ -201,32 +220,34 @@ function AStar() {
             }
         }
         const current = openSet[currentIndex];
-        // current.element.classList.add("searchCell");
         if(current === endCell) {
             reconstructPath(cameFrom, current);
             return;
         }
         removeFromArray(openSet, current);
         closedSet.add(current);
+        // current.element.classList.add("searchCell");
 
-        for(const neighbor of neighborsOf(current)) {
+        for(const neighbor of neighborsOf(current, diagonalMovement)) {
+            if(slowDweller && !isDragging) await sleep(0.001);
+            neighbor.element.classList.add("searchCell");
             if(closedSet.has(neighbor)) continue;
-
             const tentativeG = (gScore.get(current) ?? Infinity) + 1;
             if(openSet.includes(neighbor) && tentativeG >= (gScore.get(neighbor) ?? Infinity)) {
                 continue;
             }
             // paint the searched cells with cyan
-        
+            
             cameFrom.set(neighbor, current);
             gScore.set(neighbor, tentativeG);
             fScore.set(neighbor, tentativeG + dist(neighbor, endCell));
-
+            
             if(!openSet.includes(neighbor)) {
                 openSet.push(neighbor);
             }
         }
     }
+
 }
 
  

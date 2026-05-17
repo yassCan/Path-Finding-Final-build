@@ -10,11 +10,11 @@ class Cell {
         this.isVisited = false;
     }
 
-    isConnectedTo(node) {
-        return this.neighboors().includes(node);
+    isConnectedTo(node, diagonal = false) {
+        return this.neighboors(diagonal).includes(node);
     }
 
-    neighboors() {
+    neighboors(diagonal = false) {
 
         let n = []
         let x = this.x;
@@ -33,6 +33,20 @@ class Cell {
                 n.push(cellsClassTable[y+1][x])
             } catch(e) {
                 console.log(y);
+            }
+        }
+        if (diagonal) {
+            if(y > 0 && x > 0 && !cellsTable[y-1][x-1].classList.contains("obstacle")) {
+                n.push(cellsClassTable[y-1][x-1])
+            }
+            if(y > 0 && x < BOARD_WIDTH-1 && !cellsTable[y-1][x+1].classList.contains("obstacle")) {
+                n.push(cellsClassTable[y-1][x+1])
+            }
+            if(y < BOARD_HEIGHT-1 && x > 0 && !cellsTable[y+1][x-1].classList.contains("obstacle")) {
+                n.push(cellsClassTable[y+1][x-1])
+            }
+            if(y < BOARD_HEIGHT-1 && x < BOARD_WIDTH-1 && !cellsTable[y+1][x+1].classList.contains("obstacle")) {
+                n.push(cellsClassTable[y+1][x+1])
             }
         }
         
@@ -60,26 +74,6 @@ class Cell {
         
         return n
     }
-
-    walls() {
-
-        let n = []
-        let x = this.x;
-        let y = this.y
-        if(y > 0) {
-            n.push(cellsClassTable[y-1][x])
-        }
-        if(x > 0) {
-            n.push(cellsClassTable[y][x-1])
-        }
-        if(x < BOARD_WIDTH-1) {
-            n.push(cellsClassTable[y][x+1])
-        }
-        if(y < BOARD_HEIGHT-1) {
-            n.push(cellsClassTable[y+1][x])
-        }
-        
-        return n
-    }
+ 
 
 }

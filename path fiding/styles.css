@@ -10,15 +10,13 @@
 
 .path-astar {
     background: yellow;
-    /* border-color: color; */
-    border: 3px solid white;
-    /* transition: background 500ms; */
+    border: 1px solid black;
+    /* border: 3px solid white; */
 }
 .path-dijkstra {
-    background: rgb(0, 238, 255);
-    /* border-color: color; */
-    border: 3px solid white;
-    /* transition: background 500ms; */
+    background: rgb(51, 0, 255);
+    border: 1px solid black;
+    /* border: 3px solid white; */
 }
 .searchCell {
     background: cyan;
@@ -47,7 +45,7 @@ body {
 
 
 .obstacle {
-    background: black;
+    background: rgb(225, 0, 255);
     border-color: black;
     /* animation-name: opacity-anm; */
     /* animation-duration: 100ms; */
@@ -56,6 +54,11 @@ body {
 
 .visited {
     border-color: yellowgreen;
+}
+
+.dweller {
+    background-color: rgb(0, 8, 255);
+    transition: background-color 50ms;
 }
 
 .cell {

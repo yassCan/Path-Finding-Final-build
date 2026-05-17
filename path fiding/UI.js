@@ -1,18 +1,24 @@
 const board = document.querySelector(".board");
-let isDebug = true;
+let showBorders = true;
 let dragAStarFrameId = null;
+let diagonalMovement = false;
+let slowDweller = false;
+let isDragging = false
+
 
 // board width:  1000px &&
 // board height: 1000px to work with
 // clientWidth: board width: 1000
 // clientHeight: board height: 1000
 
+// add a input slider to control width and height of the board, and update the board accordingly
 
-const BOARD_HEIGHT = 60 // number of cells
-const BOARD_WIDTH = 60 // number of cells
+let BOARD_HEIGHT = 30 // number of cells
+let BOARD_WIDTH = 30 // number of cells
 let CELL_HEIGHT = board.clientHeight / BOARD_HEIGHT
 let CELL_WIDTH = board.clientWidth / BOARD_WIDTH
 // n: total number of cells
+ 
 
 let n = BOARD_HEIGHT * BOARD_WIDTH
 
@@ -55,6 +61,7 @@ function setEventListener() {
         if(cell === start || cell === end) continue;
         cell.ondrag =  _ => {
             _.preventDefault();
+            isDragging = true;
             for(const _cell of cells) {
                 _cell.ondragover = ({ target }) => {
                     if(target.classList.contains("obstacle")) {
@@ -62,7 +69,7 @@ function setEventListener() {
                     } if(target.classList.contains('path-astar') || target.classList.contains('path-dijkstra')) {
                         queueAStarUpdate()
                         target.classList.add("obstacle");
-                        
+
                     } else {
                         target.classList.add("obstacle");
                     } 
@@ -89,6 +96,7 @@ function setEventListener() {
 
     start.addEventListener("dragstart", (e) => {
         clearCellsEvent(false);
+        isDragging = true;
         cells.forEach(cell => {
             if(cell.classList.contains("END") || cell.classList.contains("obstacle")) return;
             cell.ondragover = (evt) => {
@@ -109,6 +117,7 @@ function setEventListener() {
     
     end.addEventListener("dragstart", _ => {
         clearCellsEvent(false);
+        isDragging = true;
         cells.forEach(cell => {
             if(cell.classList.contains("START") || cell.classList.contains("obstacle")) return;
             cell.ondragover = (evt) => {
@@ -121,6 +130,7 @@ function setEventListener() {
                 end.draggable = false;
                 end = target;
                 end.draggable = true;
+                queueAStarUpdate();
             };
         });
     });
@@ -132,6 +142,7 @@ function setEventListener() {
 
 
 function clearCellsEvent(startAgain=true) {
+    isDragging = false;
     cells.forEach(c => {
         c.ondragover = null;
         c.ondrag = null;
@@ -144,8 +155,8 @@ function clearCellsEvent(startAgain=true) {
 
 
 function debug() {
-    isDebug = !isDebug;
-    if(isDebug) {
+    showBorders = !showBorders;
+    if(showBorders) {
         [...document.querySelectorAll(".cell")].forEach(cell => {
             cell.style.border = "none"
             // let dot = document.createElement("div");
