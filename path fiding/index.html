@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add obstacles</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="UI.js" defer></script>
+    <script src="cell.js" defer></script>
+    <script src="dweller.js" defer></script>
+    <script defer src="main.js"></script>
+
+</head>
+<body>
+
+
+
+<!-- 
+           // this.cell = startCell;
+        // this.cell.isVisited = true;
+        // this.memory.push(this.cell);
+
+        // while (this.memory.length > 0) {
+        //     const current = this.memory[this.memory.length - 1];
+        //     const unvisited = current.distantNeighbors().filter(n => !n.isVisited);
+
+        //     if (unvisited.length > 0) {
+        //         const next = unvisited[Math.floor(Math.random() * unvisited.length)];
+        //         const wallX = (current.x + next.x) / 2;
+        //         const wallY = (current.y + next.y) / 2;
+        //         cellsTable[wallY][wallX].classList.remove("obstacle");
+
+        //         next.isVisited = true;
+        //         this.memory.push(next);
+        //     } else {
+        //         this.memory.pop();
+        //     }
+        // } -->
+<!-- 
+        const traverse = (current) => {
+            const unvisited = current.distantNeighbors().filter(n => !n.isVisited);
+
+            if (unvisited.length === 0) {
+                // backtrack to previous cell in memory
+                this.memory.pop();
+                const prev = this.memory[this.memory.length - 1];
+                if (!prev) return;
+                traverse(prev);
+                return;
+            }
+
+            const next = unvisited[Math.floor(Math.random() * unvisited.length)];
+            const wallX = Math.floor((current.x + next.x) / 2);
+            const wallY = Math.floor((current.y + next.y) / 2);
+            if (cellsTable[wallY] && cellsTable[wallY][wallX]) {
+                cellsTable[wallY][wallX].classList.remove("obstacle");
+            }
+
+            next.isVisited = true;
+            this.memory.push(next);
+            traverse(next);
+        };
+
+        traverse(this.cell); -->
+
+    <div class="board">
+        
+    </div>
+    <button onclick="startSearch()" style="font-size: 2rem; margin-top: 5px;">start !</button>
+    <button onclick="maze()" style="font-size: 2rem; margin-top: 5px;">maze !</button>
+    <button onclick="clearBoard()" style="font-size: 2rem; margin-top: 5px;">clear !</button>
+    <button onclick="debug()" style="font-size: 2rem; margin-top: 5px;">Debug mode</button>
+    <button onclick="changeAlgorithm()" style="font-size: 2rem; margin-top: 5px;">AStar | Dijkstra</button>
+    <!-- make a text that displays the name of the algorithm being used and the meaning of the colors used in the board -->
+    <p style="font-size: 2rem; font-family: Arial;">
+        Algorithm: <span id="algorithm-name">AStar</span>
+    </p>
+    <div style="font-size: 2rem; font-family: Arial; background: rgb(151, 151, 151); width: 800px;">
+        <p><span style="color: cyan;">cyan</span>: Dijkstra</p>
+        <p><span style="color: yellow;">yellow</span>: A*</p>
+        <p><span style="color: black;">black</span>: drag/click a cell to create/delete walls</p>
+
+    </div>
+</body>
+</html>
