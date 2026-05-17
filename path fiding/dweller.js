@@ -1,15 +1,3 @@
-function getPos(element) {
-    let y = 0;
-    for(let x = 0;x < cells.length;x++) {
-        if(x % BOARD_WIDTH === 0 && x !== 0) y++;
-        if(cells[x] !== element) continue;
-        let widths = Math.floor(x / BOARD_WIDTH);
-        x -= BOARD_WIDTH * widths;
-        return [x, y];
-    }    
-    // if the element is not found
-    return [0, 0];
-}
 
 
 class Dweller {
