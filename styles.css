@@ -1,0 +1,88 @@
+/* transitioning the background property is ineficient */
+.board {
+    width: 1000px;
+    height: 1000px;
+    display: grid;
+    grid-template-columns: repeat(20, 0.5fr);
+    grid-template-rows: repeat(20, 0.5fr);
+}
+
+
+.path-astar {
+    background: yellow;
+    border: 1px solid black;
+    /* border: 3px solid white; */
+}
+.path-dijkstra {
+    background: rgb(51, 0, 255);
+    border: 1px solid black;
+    /* border: 3px solid white; */
+}
+.searchCell {
+    background: cyan;
+    /* transition: background 50ms; */
+}
+.validCell {
+    animation-name: opacity-anm;
+    animation-duration: 50ms;
+    background: rgb(21, 0, 116);
+    /* transform: background 600ms; */
+}
+body {
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.079);
+}
+
+.dot {
+    position: absolute;
+    width: 30%;
+    aspect-ratio: 1;
+    background-color: rgb(84, 84, 84);
+    /* transform: translate(-50%, -50%); */
+    border-radius: 50%;
+    z-index: -1;
+}
+
+
+.obstacle {
+    background: rgb(225, 0, 255);
+    border-color: black;
+    /* animation-name: opacity-anm; */
+    /* animation-duration: 100ms; */
+    transition: background 150ms;
+}
+
+.visited {
+    border-color: yellowgreen;
+}
+
+.dweller {
+    background-color: rgb(0, 8, 255);
+    transition: background-color 50ms;
+}
+
+.cell {
+    position: relative;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.START {
+    background-color: lime;
+}
+
+.END {
+    background-color: red;    
+}
+
+
+
+@keyframes opacity-anm {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
